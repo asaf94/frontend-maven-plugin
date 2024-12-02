@@ -55,8 +55,26 @@ jobs:
       #     name: sonar-analysis-report
       #     path: sonar-report.json
 
-  dockerfile_docker_scout:
-    needs: build_sonarcloud   
+
+  run_snyk_analysis:
+    needs: build_sonarcloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+      - name: Snyk security analysis
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=critical --fail-on=all
+        continue-on-error: false 
+
+
+  dockerfile_with_docker_scout:
+    needs: run_snyk_analysis   
     runs-on: ubuntu-latest
     env:
       APP_NAME: frontend-maven-plugin
@@ -90,20 +108,3 @@ jobs:
           docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --output ./vulns.report
           # docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --only-severity critical --exit-code
           docker scout sbom --output ${{ env.APP_NAME }}.sbom ${{ env.APP_NAME }}:${{ env.VERSION }}
-
-
-  run_snyk_analysis:
-    needs: dockerfile_docker_scout
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
-      - name: Snyk security analysis
-        uses: snyk/actions/maven@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=critical --fail-on=all
-        continue-on-error: false 

@@ -42,7 +42,7 @@ jobs:
 
 # 5646
       # - name: Generate SonarQube Report
-      #   if: always()
+      #   if: alwaysfs()
       #   run: |
       #     echo "# SonarQube Analysis Report" > sonar-report.md
       #     echo "## Analysis Status: ${{ steps.sonar-status.outputs.status }}" >> sonar-report.md

@@ -2,7 +2,7 @@
 # FROM maven:3.9-eclipse-temurin-17-alpine AS builder
 # Build stage
 # Build stage
-FROM maven:3.8-eclipse-temurin-11 AS builder
+FROM maven:3.9-eclipse-temurin-11 AS builder
 WORKDIR /build
 # Copy entire project
 COPY . .

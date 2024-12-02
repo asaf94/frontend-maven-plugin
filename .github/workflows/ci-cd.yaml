@@ -36,12 +36,11 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
-            # -Dsonar.sources=.
-            # -Dsonar.language=java
-            # -Dsonar.java.binaries=.
             -Dsonar.exclusions=**/test/**
             -Dsonar.qualitygate.wait=true
-
+      # -Dsonar.sources=.
+      # -Dsonar.language=java
+      # -Dsonar.java.binaries=.
       # - name: Generate Sonar Report
       #   run: | 
       #     RESULT=curl -u ${{ secrets.SONAR_TOKEN }}: \

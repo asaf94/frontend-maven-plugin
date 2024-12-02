@@ -10,33 +10,26 @@ jobs:
   build-and-sonar:
     name: Build and SonarQube Analysis
     runs-on: ubuntu-latest
-    env:
-      APP_NAME: frontend-maven-plugin
-      VERSION: ${{ github.sha }}
     steps:
+      - name: Checkout Source
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
       - name: Build with Maven
         run: mvn clean install -DskipTests
-
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@1.5
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+          SONAR_HOST_URL: 'https://sonarcloud.io'
+        # with:
+        #   args: >
+        #     -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+        #     -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+        #     -Dsonar.python.coverage.reportPaths=coverage.xml
 
 
 

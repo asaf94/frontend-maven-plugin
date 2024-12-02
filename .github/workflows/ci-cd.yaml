@@ -105,5 +105,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --fail-on=critical --severity-threshold=critical 
+          args: --severity-threshold=critical --fail-on=all
         continue-on-error: false 

@@ -15,8 +15,6 @@
 
     <name>Frontend Plugins</name>
 
-    <name>Frontend Plugins</name>
-
     <description>
         This Maven plugin lets you install Node/NPM locally
         for your project, install dependencies with NPM,

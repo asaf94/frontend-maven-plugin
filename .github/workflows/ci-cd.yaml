@@ -36,9 +36,9 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
-            -Dsonar.sources=.
-            -Dsonar.language=java
-            -Dsonar.java.binaries=.
+            # -Dsonar.sources=.
+            # -Dsonar.language=java
+            # -Dsonar.java.binaries=.
             -Dsonar.exclusions=**/test/**
             -Dsonar.qualitygate.wait=true
 

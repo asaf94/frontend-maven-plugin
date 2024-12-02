@@ -24,30 +24,23 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      # - name: Build with Maven
-      #   # run: mvn clean install -DskipTests
-      #   run: mvn -B package --file pom.xml
+      - name: Build with Maven
+        # run: mvn clean install -DskipTests
+        run: mvn -B package --file pom.xml
 
-      # - name: SonarCloud Scan
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   with:
-      #     args: >
-      #       -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-      #       -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
-      #       -Dsonar.sources=.
-      #       -Dsonar.language=java
-      #       -Dsonar.java.binaries=.
-      #       -Dsonar.qualitygate.wait=true
-
-      - name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@v1.2.0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          host: ${{ secrets.SONARQUBE_HOST }}
-          login: ${{ secrets.SONARQUBE_TOKEN }}
-          projectKey: ${{ secrets.SONAR_PROJECT }}
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+            -Dsonar.sources=.
+            -Dsonar.language=java
+            -Dsonar.java.binaries=.
+            -Dsonar.qualitygate.wait=true
 
 
       #-Dsonar.exclusions=**/test/**

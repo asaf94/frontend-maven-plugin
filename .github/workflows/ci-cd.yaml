@@ -93,8 +93,8 @@ jobs:
           docker scout sbom --output ${{ env.APP_NAME }}.sbom ${{ env.APP_NAME }}:${{ env.VERSION }}
 
 
-  run_snyk:
-    needs: synk_security_analysis
+  run_snyk_analysis:
+    needs: dockerfile_docker_scout
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

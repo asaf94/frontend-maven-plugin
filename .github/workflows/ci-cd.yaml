@@ -38,6 +38,33 @@ jobs:
             -Dsonar.language=java
             -Dsonar.java.binaries=.
             -Dsonar.exclusions=**/test/**
+            -Dsonar.qualitygate.wait=true
+          
+      - name: Generate Sonar Report
+        run: | 
+          RESULT=curl -u ${{ secrets.SONAR_TOKEN }}: \
+            -X GET "https://sonarcloud.io/api/measures/component?componentKey=${{ secrets.SONAR_PROJECT }}&metricKeys=coverage" \
+            -o sonar-report.json
+
+      - name: Check for Sonar Blocker issues
+        run: |
+          sleep 5  # Wait for SonarCloud to process
+          blockers=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
+            "https://sonarcloud.io/api/issues/search?componentKeys=${{ secrets.SONAR_PROJECT }}&severities=BLOCKER&resolved=false" \
+            | jq '.paging.total' )
+          
+          # If there are any blocker issues, fail the build
+          if [ "$blockers" -gt 0 ]; then
+            echo "Pipeline failed due to blocker issues."
+            exit 1
+          fi
+
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonar-analysis-report
+          path: sonar-report.json
 
 # name: Security Analysis
 

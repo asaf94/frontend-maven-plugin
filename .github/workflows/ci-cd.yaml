@@ -36,12 +36,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.sources=frontend-maven-plugin/src,frontend-plugin-core/src \
-            -Dsonar.java.binaries=frontend-maven-plugin/target/classes,frontend-plugin-core/target/classes \
-            -Dsonar.modules=frontend-maven-plugin,frontend-plugin-core
+            
 
       # Check SonarQube Quality Gate
       - name: Check Quality Gate

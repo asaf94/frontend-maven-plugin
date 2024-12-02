@@ -11,13 +11,12 @@ on:
 jobs:
   build_sonarcloud:
     runs-on: ubuntu-latest
-
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -97,6 +96,8 @@ jobs:
     needs: dockerfile_docker_scout
     runs-on: ubuntu-latest
     steps:
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
       - uses: actions/checkout@v4
       - name: Snyk security analysis
         uses: snyk/actions/maven@master

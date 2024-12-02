@@ -37,9 +37,12 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=frontend-maven-plugin/src,frontend-plugin-core/src
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       # - name: Generate SonarQube Report
       #   if: always()

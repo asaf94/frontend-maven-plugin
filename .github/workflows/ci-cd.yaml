@@ -56,7 +56,7 @@ jobs:
           name: sonar-analysis-report
           path: sonar-report.json
 
-# name: Security Analysis
+# name: Security Analysisff
 
 # on:
 #   push:

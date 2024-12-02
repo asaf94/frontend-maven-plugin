@@ -13,7 +13,6 @@ jobs:
     env:
       APP_NAME: frontend-maven-plugin
       VERSION: ${{ github.sha }}
-      SONAR_PROJECT: "security-analysis_project1"
     outputs:
       image_tag: ${{ steps.image.outputs.tag }}
       sonar_status: ${{ steps.sonar-status.outputs.status }}
@@ -37,10 +36,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.qualitygate.wait=true
             -Dsonar.java.binaries=target/classes
-
+            
       # Check SonarQube Quality Gate
       - name: Check Quality Gate
         run: |

@@ -1,20 +1,16 @@
-# Eclipse
-/.classpath
-/.project
-/.settings
-
-# Intellij
 .idea
 *.iml
-*.ipr
-
-# Maven
 target
-release.properties
-pom.xml.releaseBackup
-pom.xml.tag
-pom.xml.next
+.settings
+.classpath
+.project
+.metadata
+.recommenders
+bin
+travis/codesigning.asc
+frontend-plugin-core/target
+frontend-maven-plugin/target
 
-# Jahia DX Studio
-repository.xml.generated
-
+#macOS
+.DS_Store
+.vscode

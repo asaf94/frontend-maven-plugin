@@ -39,7 +39,7 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
             -Dsonar.sources=frontend-maven-plugin/src/main,frontend-plugin-core/src/main
-            -Dsonar.exclusions=**/test/**,
+            -Dsonar.exclusions=**/test/**
 
 # 5646
       # - name: Generate SonarQube Report

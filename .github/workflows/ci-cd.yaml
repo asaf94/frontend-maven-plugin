@@ -39,6 +39,8 @@ jobs:
             -Dsonar.java.binaries=.
             -Dsonar.exclusions=**/test/**
             -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.conditions=blocker-violations=0
+
           
       - name: Generate Sonar Report
         run: | 

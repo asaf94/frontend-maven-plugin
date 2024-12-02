@@ -24,12 +24,6 @@ import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Hard-coded credentials
-String password = "mySecretPassword123";  // Critical: Credentials should never be hardcoded
-
-// SQL Injection vulnerability
-String query = "SELECT * FROM users WHERE id = " + userId;  // Critical: Use parameterized queries instead
-
 class ArchiveExtractionException extends Exception {
 
     ArchiveExtractionException(String message) {

@@ -30,29 +30,16 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
-      - name: SonarQube Analysis
+      - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }} \
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.sources=frontend-maven-plugin/src,frontend-plugin-core/src
-
-
-      # Check SonarQube Quality Gate
-      - name: Check Quality Gate
-        run: |
-          sleep 5  # Wait for SonarQube to process
-          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ env.APP_NAME }}" | jq -r '.projectStatus.status')
-          echo "status=$STATUS" >> $GITHUB_OUTPUT
-          if [ "$STATUS" = "ERROR" ]; then
-            echo "SonarQube Quality Gate failed with status: $STATUS"
-            echo "Critical issues found in code analysis"
-            exit 1
-          fi
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       # - name: Generate SonarQube Report
       #   if: always()

@@ -1,42 +1,114 @@
 name: Security Analysis
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-sonar:
+    name: Build and SonarQube Analysis
     runs-on: ubuntu-latest
     env:
       APP_NAME: frontend-maven-plugin
       VERSION: ${{ github.sha }}
+      SONAR_PROJECT: "security-analysis_project1"
+    outputs:
+      image_tag: ${{ steps.image.outputs.tag }}
+      sonar_status: ${{ steps.sonar-status.outputs.status }}
     steps:
       - uses: actions/checkout@v4
-
-      # Login to Docker Hub (required for Docker Scout)
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          fetch-depth: 0
 
-      # Install Docker Scout CLI
-      - name: Install Docker Scout
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s --
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-      # Build Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.APP_NAME }}:${{ env.VERSION }} .
-          docker tag ${{ env.APP_NAME }}:${{ env.VERSION }} ${{ env.APP_NAME }}:latest
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
 
-      # Run Docker Scout security scanning
-      - name: Docker Scout Scanning
+      - name: SonarQube Analysis
+        uses: sonarsource/sonarqube-scan-action@master
         env:
-          DOCKER_SCOUT_HUB_USER: ${{ secrets.DOCKER_USERNAME }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT }}
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.java.binaries=target/classes
+
+      # Check SonarQube Quality Gate
+      - name: Check Quality Gate
         run: |
-          docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --output ./vulns.report
-          docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --only-severity critical --exit-code
-          docker scout sbom --output ${{ env.APP_NAME }}.sbom ${{ env.APP_NAME }}:${{ env.VERSION }}
+          sleep 5  # Wait for SonarQube to process
+          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ env.APP_NAME }}" | jq -r '.projectStatus.status')
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          if [ "$STATUS" = "ERROR" ]; then
+            echo "SonarQube Quality Gate failed with status: $STATUS"
+            echo "Critical issues found in code analysis"
+            exit 1
+          fi
+
+      # - name: Generate SonarQube Report
+      #   if: always()
+      #   run: |
+      #     echo "# SonarQube Analysis Report" > sonar-report.md
+      #     echo "## Analysis Status: ${{ steps.sonar-status.outputs.status }}" >> sonar-report.md
+      #     echo "Analysis completed at: $(date)" >> sonar-report.md
+      #     if [ "${{ steps.sonar-status.outputs.status }}" = "ERROR" ]; then
+      #       echo "Critical issues found - Pipeline stopped" >> sonar-report.md
+      #     else
+      #       echo "No critical issues found" >> sonar-report.md
+      #     fi
+
+      # - name: Upload SonarQube Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: sonar-report
+      #     path: sonar-report.md
+
+  # build:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     APP_NAME: frontend-maven-plugin
+  #     VERSION: ${{ github.sha }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     # Login to Docker Hub (required for Docker Scout)
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  #     # Build Docker image
+  #     - name: Build Docker image
+  #       run: |
+  #         docker build -t ${{ env.APP_NAME }}:${{ env.VERSION }} .
+  #         docker tag ${{ env.APP_NAME }}:${{ env.VERSION }} ${{ env.APP_NAME }}:latest
+
+
+
+
+  #     # Install Docker Scout CLI
+  #     - name: Install Docker Scout
+  #       run: |
+  #         curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s --
+
+  #     # Run Docker Scout security scanning
+  #     - name: Docker Scout Scanning
+  #       env:
+  #         DOCKER_SCOUT_HUB_USER: ${{ secrets.DOCKER_USERNAME }}
+  #       run: |
+  #         docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --output ./vulns.report
+  #         docker scout cves ${{ env.APP_NAME }}:${{ env.VERSION }} --only-severity critical --exit-code
+  #         docker scout sbom --output ${{ env.APP_NAME }}.sbom ${{ env.APP_NAME }}:${{ env.VERSION }}
 
       # # Upload reports as artifacts
       # - name: Upload Security Reports

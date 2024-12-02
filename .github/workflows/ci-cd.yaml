@@ -39,9 +39,8 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.language=java
             -Dsonar.java.binaries=.
-            -Dsonar.exclusions=**/test/**
             -Dsonar.qualitygate.wait=true
-      
+      #-Dsonar.exclusions=**/test/**
       # - name: Generate Sonar Report
       #   run: | 
       #     RESULT=curl -u ${{ secrets.SONAR_TOKEN }}: \

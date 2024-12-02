@@ -27,6 +27,10 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests
       
+      - name: Build with Code
+        run: mvn clean package
+      
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

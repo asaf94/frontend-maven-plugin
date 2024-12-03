@@ -71,7 +71,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
       - run: ./mvnw verify --show-version --batch-mode --errors --no-transfer-progress --settings .mvn/settings.xml
-      #     cache: 'maven' 
+          # cache: 'maven' 
 
       # - name: Build with Maven
       #   run: mvn clean package -DskipTests

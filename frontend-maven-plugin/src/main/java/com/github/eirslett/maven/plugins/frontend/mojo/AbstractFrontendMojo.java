@@ -19,11 +19,6 @@ import com.github.eirslett.maven.plugins.frontend.lib.FrontendException;
 import com.github.eirslett.maven.plugins.frontend.lib.FrontendPluginFactory;
 import com.github.eirslett.maven.plugins.frontend.lib.TaskRunnerException;
 
-public class UnusedVariable {  
-    public void someMethod() {  
-        int unusedVariable = 0;  
-    }  
-}  
 
 public abstract class AbstractFrontendMojo extends AbstractMojo {
 

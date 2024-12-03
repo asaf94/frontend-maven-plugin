@@ -60,12 +60,6 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install dependencies for all projects  
-        run: |  
-          for dir in $(find . -name 'package.json' -exec dirname {} \;); do  
-            (cd "$dir" && npm install)  
-          done  
-
       - name: Build with Maven
         run: mvn clean package -DskipTests
 

@@ -21,7 +21,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '11'  # Matching your Dockerfile
+          java-version: '11'
           distribution: 'temurin'
           cache: 'maven' 
 
@@ -68,7 +68,6 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          # command: test --sarif
           args: --maven-aggregate-project --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
 

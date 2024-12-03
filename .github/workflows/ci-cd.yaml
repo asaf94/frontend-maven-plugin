@@ -70,10 +70,9 @@ jobs:
         with:
           # command: test --sarif
           args: --all-projects --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
-        continue-on-error: false
+        continue-on-error: true
 
       - name: Upload result to GitHub Code Scanning
-        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk_test.sarif

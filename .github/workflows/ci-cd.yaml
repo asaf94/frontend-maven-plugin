@@ -97,7 +97,7 @@ jobs:
 
 
   dockerfile_with_docker_scout:
-    needs: run_snyk_analysis   
+    # needs: run_snyk_analysis   
     runs-on: ubuntu-latest
     env:
       APP_NAME: frontend-maven-plugin

@@ -52,48 +52,47 @@ jobs:
           name: sonar-analysis-report
           path: sonar-report.json
 
-  # run_snyk_analysis:
-  #   needs: build_sonarcloud
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout source
-  #       uses: actions/checkout@v4
+  run_snyk_analysis:
+    needs: build_sonarcloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-  #     - name: Set up JDK
-  #       uses: actions/setup-java@v4
-  #       with:
-  #         java-version: '11'  # Matching your Dockerfile
-  #         distribution: 'temurin'
-  #         cache: 'maven' 
-  #         # distribution: 'adopt'
-  #     # - uses: actions/cache@v2
-  #     #   with:
-  #     #     path: ~/.m2/repository
-  #     #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-  #     #     restore-keys: ${{ runner.os }}-maven-
-  #     # - run: ./mvnw verify --show-version --batch-mode --errors --no-transfer-progress --settings .mvn/settings.xml
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'  # Matching your Dockerfile
+          distribution: 'temurin'
+          cache: 'maven' 
+          # distribution: 'adopt'
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-maven-
+      # - run: ./mvnw verify --show-version --batch-mode --errors --no-transfer-progress --settings .mvn/settings.xml
           
 
-  #     - name: Build with Maven
-  #       run: mvn clean package -DskipTests
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
-  #     - name: Create and set permissions for Maven directories
-  #       run: chmod +x mvnw
+      - name: Create and set permissions for Maven directories
+        run: chmod +x mvnw
         
-  #     - name: Snyk security analysis
-  #       uses: snyk/actions/maven@master
-  #       env:
-  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #       with:
-  #         # command: test --sarif
-  #         args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
-  #       continue-on-error: false
+      - name: Snyk security analysis
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          # command: test --sarif
+          args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
+        continue-on-error: false
 
-  #     - name: Upload result to GitHub Code Scanning
-  #       uses: github/codeql-action/upload-sarif@v2
-  #       with:
-  #         sarif_file: snyk_test.sarif
-
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk_test.sarif
 
 
   dockerfile_with_docker_scout:

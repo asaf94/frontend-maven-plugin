@@ -68,14 +68,13 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --maven-aggregate-project --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
+          args: --maven-aggregate-project --severity-threshold=critical --fail-on=all --sarif-file-output=snyk.sarif
         continue-on-error: false
 
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: snyk_test.sarif
-
+          sarif_file: snyk.sarif
 
   dockerfile_with_docker_scout:
     runs-on: ubuntu-latest

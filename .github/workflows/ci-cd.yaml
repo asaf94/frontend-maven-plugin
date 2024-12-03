@@ -26,7 +26,7 @@ jobs:
           cache: 'maven' 
 
       - name: Build with Maven
-        run: mvn spring-boot:run # mvn clean package -DskipTests
+        run: mvn clean package -DskipTests
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -67,7 +67,7 @@ jobs:
           cache: 'maven' 
 
       - name: Build with Maven
-        run: mvn spring-boot:run # mvn clean package -DskipTests
+        run: mvn clean package -DskipTests
 
       # - name: Create and set permissions for Maven directories
       #   run: chmod +x mvnw

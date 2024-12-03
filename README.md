@@ -1,152 +1,55 @@
-Based on https://www.udemy.com/course/devsecops-with-terraform-kubernetes-jenkins-aws
-
-[![Build Status](https://travis-ci.org/k-tamura/easybuggy.svg?branch=master)](https://travis-ci.org/k-tamura/easybuggy)
+[![Build Status](https://travis-ci.org/k-tamura/easybuggy4sb.svg?branch=master)](https://travis-ci.org/k-tamura/easybuggy4sb)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![GitHub release](https://img.shields.io/github/release/k-tamura/easybuggy.svg)](https://github.com/k-tamura/easybuggy/releases/latest)
+[![GitHub release](https://img.shields.io/github/release/k-tamura/easybuggy4sb.svg)](https://github.com/k-tamura/easybuggy4sb/releases/latest)
 
-EasyBuggy Vulnerable Web App Modified by A Security Guru :baby_symbol:
-=
+# EasyBuggy Boot :four_leaf_clover:
 
-EasyBuggy is a broken web application in order to understand behavior of bugs and vulnerabilities, for example, [memory leak, deadlock, JVM crash, SQL injection and so on](https://github.com/k-tamura/easybuggy#clock4-easybuggy-can-reproduce).
+This is a clone of EasyBuggy built on Spring Boot. [EasyBuggy](https://github.com/k-tamura/easybuggy) is a broken web application in order to understand behavior of bugs and vulnerabilities, for example, [memory leak, deadlock, JVM crash, SQL injection and so on](https://github.com/k-tamura/easybuggy4sb/wiki).
 
-![logo](https://raw.githubusercontent.com/wiki/k-tamura/easybuggy/images/mov_eb.gif)
+![logo](https://raw.githubusercontent.com/wiki/k-tamura/easybuggy/images/mov_ebsb.gif)
+
+:clock4: Quick Start (Docker Compose) with Keycloak, MySQL, Attacker's app
+-
+
+    $ echo HOST=192.168.1.17 > .env # if you run EasyBuggy Boot not on localhost (e.g. 192.168.1.17)
+    $ docker compose up
+
+Access to
+
+    http://192.168.1.17:8080
 
 :clock4: Quick Start
 -
 
-    $ mvn clean install
+    $ mvn spring-boot:run
 
-( or ``` java -jar easybuggy.jar ``` or deploy ROOT.war on your servlet container with [the JVM options](https://github.com/k-tamura/easybuggy/blob/master/pom.xml#L204). )
+( or ``` java -jar ROOT.war ``` or deploy ROOT.war on your servlet container with [the JVM options](https://github.com/k-tamura/easybuggy4sb/blob/master/pom.xml#L148). )
 
-Access to
+:warning: **Java 7 or 8 is needed. Doesn't work with Java 9 or later.**
 
-    http://localhost:8080
-
-:clock4: Quick Start(Docker)
+:clock4: Quick Start (Docker)
 -
 
-    $ docker build . -t easybuggy:local # Build container image
-    $ docker run -p 8080:8080 easybuggy:local # Start easybuggy
+    $ docker build . -t easybuggy4sb       # Build container image
+    $ docker run -p 8080:8080 easybuggy4sb # Start easybuggy
 
 Access to
 
     http://localhost:8080
 
-### To stop:
+#### To stop:
 
-  Use <kbd>CTRL</kbd>+<kbd>C</kbd> ( or access to: http://localhost:8080/exit )
+  Use <kbd>CTRL</kbd>+<kbd>C</kbd>
 
+    
 :clock4: For more detail
 -
    
-See [the wiki page](https://github.com/k-tamura/easybuggy/wiki).
+See [the wiki page](https://github.com/k-tamura/easybuggy4sb/wiki).
 
 :clock4: Demo
 -
 
 This demo shows: Start up -> Infinite Loop -> LDAP Injection -> UnsatisfiedLinkError -> BufferOverflowException -> Deadlock -> Memory Leak -> JVM Crash (Shut down)
 
-![demo](https://github.com/k-tamura/easybuggy/blob/master/demo_eb.gif)
-
-:clock4: EasyBuggy can reproduce:
--
-
-* Troubles
-
-  * Memory Leak (Java heap space)
-  * Memory Leak (PermGen space)
-  * Memory Leak (C heap space)
-  * Deadlock (Java)
-  * Deadlock (SQL)
-  * Endless Waiting Process
-  * Infinite Loop
-  * Redirect Loop
-  * Forward Loop
-  * JVM Crash
-  * Network Socket Leak
-  * Database Connection Leak
-  * File Descriptor Leak 
-  * Thread Leak 
-  * Mojibake
-  * Integer Overflow
-  * Round Off Error
-  * Truncation Error
-  * Loss of Trailing Digits
-
-* Vulnerabilities
-
-  * XSS (Cross-Site Scripting)
-  * SQL Injection
-  * LDAP Injection
-  * Code Injection
-  * OS Command Injection (OGNL Expression Injection)
-  * Mail Header Injection
-  * Null Byte Injection
-  * Extension Unrestricted File Upload
-  * Size Unrestricted File Upload
-  * Open Redirect
-  * Brute-force Attack
-  * Session Fixation Attacks
-  * Verbose Login Error Messages
-  * Dangerous File Inclusion
-  * Directory Traversal
-  * Unintended File Disclosure
-  * CSRF (Cross-Site Request Forgery)
-  * XEE (XML Entity Expansion)
-  * XXE (XML eXternal Entity)
-  * Clickjacking
-
-* Performance Degradation
-
-  * Slow Regular Expression Parsing
-  * Delay of creating string due to +(plus) operator
-  * Delay due to unnecessary object creation
-
-* Errors
-
-  * AssertionError
-  * ExceptionInInitializerError
-  * FactoryConfigurationError
-  * GenericSignatureFormatError
-  * NoClassDefFoundError
-  * OutOfMemoryError (Java heap space) 
-  * OutOfMemoryError (Requested array size exceeds VM limit)
-  * OutOfMemoryError (unable to create new native thread)
-  * OutOfMemoryError (GC overhead limit exceeded)
-  * OutOfMemoryError (PermGen space)
-  * OutOfMemoryError (Direct buffer memory)
-  * StackOverflowError
-  * TransformerFactoryConfigurationError
-  * UnsatisfiedLinkError
-
-:clock4: EasyBuggy clones:
--
-* [EasyBuggy Boot](https://github.com/k-tamura/easybuggy4sb)
-
-  EasyBuggy clone build on Spring Boot
-
-  ![logo](https://raw.githubusercontent.com/wiki/k-tamura/easybuggy/images/mov_ebsb.gif)
-
-* [EasyBuggy Bootlin](https://github.com/k-tamura/easybuggy4kt)
-
-  EasyBuggy clone build on Spring Boot and written in Kotlin
-
-  ![logo](https://raw.githubusercontent.com/wiki/k-tamura/easybuggy/images/mov_ebkt.gif)
-
-* [EasyBuggy Django](https://github.com/k-tamura/easybuggy4django)
-
-  EasyBuggy clone build on Django 2 and written in Python
-
-  　![logo](https://github.com/k-tamura/easybuggy4django/blob/master/static/easybuggy.png)
-
-
-
-# Jenkins plugins
-1.  Amazon ECR plugin Version 1.136.v914ea_5948634 
-2. AWS Credentials Plugin Version 
-3. Kubernetes CLI Plugin Version 1.12.1 
-4. Docker pipeline
-
-# Cleanup
-
-eksctl delete cluster --region=us-east-1 --name=kubernetes-cluster
+![demo](https://github.com/k-tamura/test/blob/master/demo_ebsb.gif)

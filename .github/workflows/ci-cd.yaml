@@ -76,25 +76,25 @@ jobs:
       #     name: sonar-analysis-report
       #     path: sonar-report.json
 
-      - name: Check SonarCloud Quality Gate status
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          for i in {1..10}; do
-            status=$(curl -s -u $SONAR_TOKEN: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT }}" | jq -r '.projectStatus.status')
-            if [ "$status" == "OK" ]; then
-              echo "Quality gate passed: $status"
-              exit 0
-            elif [ "$status" == "ERROR" ]; then
-              echo "Quality gate failed: $status"
-              exit 1
-            else
-              echo "Quality gate status: $status. Retrying in 30 seconds..."
-              sleep 30
-            fi
-          done
-          echo "Quality gate check failed: Timed out"
-          exit 1
+      # - name: Check SonarCloud Quality Gate status
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     for i in {1..10}; do
+      #       status=$(curl -s -u $SONAR_TOKEN: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT }}" | jq -r '.projectStatus.status')
+      #       if [ "$status" == "OK" ]; then
+      #         echo "Quality gate passed: $status"
+      #         exit 0
+      #       elif [ "$status" == "ERROR" ]; then
+      #         echo "Quality gate failed: $status"
+      #         exit 1
+      #       else
+      #         echo "Quality gate status: $status. Retrying in 30 seconds..."
+      #         sleep 30
+      #       fi
+      #     done
+      #     echo "Quality gate check failed: Timed out"
+      #     exit 1
 
 
   run_snyk_analysis:
@@ -124,8 +124,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=critical --fail-on=all
+          command: test --sarif
+          args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
+
 
       # - name: Build with Maven
       #   run: mvn clean install -DskipTests

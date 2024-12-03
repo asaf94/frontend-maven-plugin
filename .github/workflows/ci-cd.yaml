@@ -67,9 +67,6 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
-
-      - name: Create and set permissions for Maven directories
-        run: chmod +x mvnw
         
       - name: Snyk security analysis
         uses: snyk/actions/maven@master

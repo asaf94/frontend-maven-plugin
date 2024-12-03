@@ -18,6 +18,17 @@ import org.eclipse.aether.RepositorySystemSession;
 import com.github.eirslett.maven.plugins.frontend.lib.FrontendException;
 import com.github.eirslett.maven.plugins.frontend.lib.FrontendPluginFactory;
 import com.github.eirslett.maven.plugins.frontend.lib.TaskRunnerException;
+import javax.servlet.http.HttpServlet;  
+import javax.servlet.http.HttpServletRequest;  
+import javax.servlet.http.HttpServletResponse;  
+  
+public class YourServlet extends HttpServlet {  
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {  
+        // This will trigger a SonarCloud issue  
+        request.getSession().setAttribute("nonSerializable", new Object());  
+    }  
+}  
+
 
 public abstract class AbstractFrontendMojo extends AbstractMojo {
 

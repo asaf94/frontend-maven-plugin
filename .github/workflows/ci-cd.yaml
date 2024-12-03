@@ -43,11 +43,13 @@ jobs:
             -Dsonar.qualitygate.wait=true
 
       - name: Generate Sonar Report
+        if: always()
         run: | 
           curl -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" "https://sonarcloud.io/api/measures/component?componentKey=${{ secrets.SONAR_PROJECT }}&metricKeys=coverage,bugs,vulnerabilities" -o sonar-report.json
 
       - name: Upload Report
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: sonar-analysis-report
           path: sonar-report.json
@@ -58,12 +60,12 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # - name: Set up JDK
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     java-version: '11'  
-      #     distribution: 'temurin'
-      #     cache: 'maven' 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'  
+          distribution: 'temurin'
+          cache: 'maven' 
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
@@ -78,6 +80,7 @@ jobs:
         continue-on-error: false
 
       - name: Upload result to GitHub Code Scanning
+        if: always()
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk_test.sarif

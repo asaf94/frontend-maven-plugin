@@ -63,11 +63,18 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '11'  # Matching your Dockerfile
-          distribution: 'temurin'
-          cache: 'maven' 
+          # distribution: 'temurin'
+          distribution: 'adopt'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - run: ./mvnw verify --show-version --batch-mode --errors --no-transfer-progress --settings .mvn/settings.xml
+      #     cache: 'maven' 
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+      # - name: Build with Maven
+      #   run: mvn clean package -DskipTests
 
       # - name: Create and set permissions for Maven directories
       #   run: chmod +x mvnw

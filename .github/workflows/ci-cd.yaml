@@ -63,9 +63,8 @@ jobs:
 
       - name: Generate Sonar Report
         run: | 
-          RESULT=curl -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" \
-            "https://sonarcloud.io/api/measures/component?componentKey=${{ secrets.SONAR_PROJECT }}&metricKeys=coverage,bugs,vulnerabilities" \
-            -o sonar-report.json
+          curl -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" "https://sonarcloud.io/api/measures/component?componentKey=${{ secrets.SONAR_PROJECT }}&metricKeys=coverage,bugs,vulnerabilities" -o sonar-report.json
+
 
       - name: Upload Report
         uses: actions/upload-artifact@v3
@@ -92,6 +91,10 @@ jobs:
           command: test --sarif
           args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk_test.sarif
   # run_snyk_analysis:
   #   needs: build_sonarcloud
   #   runs-on: ubuntu-latest

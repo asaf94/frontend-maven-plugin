@@ -69,7 +69,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           # command: test --sarif
-          args: --all-projects --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
+          args: --maven-aggregate-project --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
 
       - name: Upload result to GitHub Code Scanning

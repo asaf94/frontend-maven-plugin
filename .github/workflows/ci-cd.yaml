@@ -31,7 +31,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'  # Matching your Dockerfile
+          java-version: '11'  # Matching your Dockerfile
           distribution: 'temurin'
 
       - name: Cache Maven packages
@@ -43,9 +43,6 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
-
-      - name: Install jq
-        run: sudo apt-get install -y jq
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -81,8 +78,22 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'  # Matching your Dockerfile
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build with Maven
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests
       - name: Snyk security analysis
         uses: snyk/actions/maven@master
         env:
@@ -91,6 +102,7 @@ jobs:
           command: test --sarif
           args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
+        
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:

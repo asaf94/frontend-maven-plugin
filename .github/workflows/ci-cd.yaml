@@ -66,8 +66,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven' 
 
-      - name: Set execute permissions
-        run: ls -la ~/.m2/wrapper/dists
+      - name: Create and set permissions for Maven directories
+        run: |
+          mkdir -p ~/.m2
+          chmod -R +x ~/.m2
 
       - name: Build with Maven
         run: mvn clean package -DskipTests

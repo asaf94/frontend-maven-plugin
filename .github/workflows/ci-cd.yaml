@@ -26,7 +26,7 @@ jobs:
           cache: 'maven' 
 
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: mvn spring-boot:run # mvn clean package -DskipTests
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -66,8 +66,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven' 
 
-      # - name: Build with Maven
-      #   run: mvn clean package -DskipTests
+      - name: Build with Maven
+        run: mvn spring-boot:run # mvn clean package -DskipTests
 
       # - name: Create and set permissions for Maven directories
       #   run: chmod +x mvnw
@@ -78,7 +78,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           # command: test --sarif
-          args: --severity-threshold=critical --fail-on=all #--sarif-file-output=snyk_test.sarif
+          args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
 
       - name: Upload result to GitHub Code Scanning

@@ -31,7 +31,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '8'  # Matching your Dockerfile
+          java-version: '17'  # Matching your Dockerfile
           distribution: 'temurin'
 
       - name: Cache Maven packages
@@ -41,19 +41,25 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # - name: SonarCloud Scan
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   with:
-      #     args: >
-      #       -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-      #       -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
-      #       -Dsonar.sources=.
-      #       -Dsonar.language=java
-      #       -Dsonar.java.binaries=.
-      #       -Dsonar.qualitygate.wait=true
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+            -Dsonar.sources=.
+            -Dsonar.language=java
+            -Dsonar.java.binaries=.
+            -Dsonar.qualitygate.wait=true
 
 
       #-Dsonar.exclusions=**/test/**
@@ -70,6 +76,26 @@ jobs:
       #     name: sonar-analysis-report
       #     path: sonar-report.json
 
+      - name: Check SonarCloud Quality Gate status
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          for i in {1..10}; do
+            status=$(curl -s -u $SONAR_TOKEN: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT }}" | jq -r '.projectStatus.status')
+            if [ "$status" == "OK" ]; then
+              echo "Quality gate passed: $status"
+              exit 0
+            elif [ "$status" == "ERROR" ]; then
+              echo "Quality gate failed: $status"
+              exit 1
+            else
+              echo "Quality gate status: $status. Retrying in 30 seconds..."
+              sleep 30
+            fi
+          done
+          echo "Quality gate check failed: Timed out"
+          exit 1
+
 
   run_snyk_analysis:
     needs: build_sonarcloud
@@ -77,14 +103,11 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-      - name: Set up JDK 8
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'temurin'
-
-      # - name: Build with Maven
-      #   run: mvn clean package -DskipTests
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -92,6 +115,9 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
       - name: Run Snyk to check Maven dependencies
         uses: snyk/actions/maven@master

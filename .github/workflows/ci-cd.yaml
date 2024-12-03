@@ -99,10 +99,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: test --sarif
+          # command: test --sarif
           args: --severity-threshold=critical --fail-on=all --sarif-file-output=snyk_test.sarif
         continue-on-error: false
-        
+
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:

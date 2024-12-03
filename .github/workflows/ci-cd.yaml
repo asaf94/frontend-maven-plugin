@@ -67,10 +67,10 @@ jobs:
           cache: 'maven' 
 
       - name: Build with Maven
-        run: mvn clean package #-DskipTests
+        run: mvn clean package -DskipTests
         
       - name: Snyk security analysis
-        uses: snyk/actions/maven@master
+        uses: snyk/actions/maven-3-jdk-11@master #snyk/actions/maven@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

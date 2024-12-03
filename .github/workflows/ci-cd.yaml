@@ -21,7 +21,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '11'  # Matching your Dockerfile
+          java-version: '17'  # Matching your Dockerfile
           distribution: 'temurin'
           cache: 'maven' 
 
@@ -58,15 +58,15 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'  
-          distribution: 'temurin'
-          cache: 'maven' 
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     java-version: '11'  
+      #     distribution: 'temurin'
+      #     cache: 'maven' 
 
-      # - name: Build with Maven
-      #   run: mvn clean package -DskipTests
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
       - name: Snyk security analysis
         uses: snyk/actions/maven@master
